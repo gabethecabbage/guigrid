@@ -6,10 +6,14 @@ import os
 import subprocess
        
 def main():
-    config_file=open('/home/'+getpass.getuser()+'/.sbgrid.conf', 'r')
-    prog_tuples = find_sbgrid_progs() #(ProgramName, [vernums, disable]
+    conf_path='/home/'+getpass.getuser()+'/.sbgrid.conf'
+    if not os.path.isfile(conf_path):
+        conf_path='default_sbgrid.conf'
+    
+    config_file=open(conf_path, 'r')
+    prog_dict, prog_list = find_sbgrid_progs()
     read_config(config_file)
-    get_override_name(prog_tuples[20][0])
+    #get_override_name("eman2")
 
 
 
@@ -33,15 +37,15 @@ def read_config(config_file):
 
 def find_sbgrid_progs():
     prog_folder = "/programs/x86_64-linux/"
-    progs_list = list_top_level_dir(prog_folder)
-    progs_list.sort()
-    prog_tuples=[]
-    for app in progs_list:
+    prog_list = list_top_level_dir(prog_folder)
+    prog_list.sort()
+    prog_dict={}
+    for app in prog_list:
         ver_list = list_top_level_dir(prog_folder+app)
         ver_list.sort()
         ver_list.append("disable")
-        prog_tuples.append((app,ver_list))
-    return prog_tuples
+        prog_dict[app]= ver_list
+    return prog_dict, prog_list
     
 def list_top_level_dir(thedir):            
     dirlist=[ name for name in os.listdir(thedir) if os.path.isdir(os.path.join(thedir, name)) ]
