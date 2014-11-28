@@ -7,10 +7,10 @@ from PyQt4 import QtGui, QtCore
 
 
 
-class Example(QtGui.QMainWindow):
+class ConfigEditor(QtGui.QMainWindow):
     
     def __init__(self):
-        super(Example, self).__init__()
+        super(ConfigEditor, self).__init__()
         
         self.initUI()
         
@@ -38,7 +38,7 @@ class Example(QtGui.QMainWindow):
         self.ver_sel_combo.completer()
 
         self.add_btn = QtGui.QPushButton(self)
-        self.add_btn.setIcon(QtGui.QIcon("icon-plus-512.png"))
+        self.add_btn.setIcon(QtGui.QIcon("icons/icon-plus-512.png"))
         self.add_btn.setEnabled(False)
         self.add_btn.setToolTip('Sets the selected <b>version</b> as default for this <b>program</b>. ')
 
@@ -76,6 +76,7 @@ class Example(QtGui.QMainWindow):
 
         self.setGeometry(300, 300, 360, 350)
         self.setFixedSize(360, 350)
+        self.setWindowIcon(QtGui.QIcon('icons/gbsgrid-icon.png'))        
         self.setWindowTitle('SBGrid Version manager - GBSGrid')
         self.show()
 
@@ -136,7 +137,7 @@ class Example(QtGui.QMainWindow):
 def main():
     
     app = QtGui.QApplication(sys.argv)
-    ex = Example()
+    ex = ConfigEditor()
     sys.exit(app.exec_())
 
     
