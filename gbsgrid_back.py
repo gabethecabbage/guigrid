@@ -11,7 +11,7 @@ def open_config():
     
     conf_path='/home/'+getpass.getuser()+'/.sbgrid.conf'
     if not os.path.isfile(conf_path):
-        conf_path='default_sbgrid.conf'
+        conf_path='gbsgrid_default.conf'
     
     config_file=open(conf_path, 'r')
     return config_file
