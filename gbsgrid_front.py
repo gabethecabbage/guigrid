@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import backend
+import gbsgrid_back
 from PyQt4 import QtGui, QtCore
 
 
@@ -25,9 +25,9 @@ class ConfigEditor(QtGui.QMainWindow):
         self.lbl4.adjustSize()
         self.statusBar().showMessage('Ready')
    
-        config_file=backend.open_config()
-        self.config_header, self.config_array = backend.read_config(config_file)
-        self.prog_dict, prog_list = backend.find_sbgrid_progs()
+        config_file=gbsgrid_back.open_config()
+        self.config_header, self.config_array = gbsgrid_back.read_config(config_file)
+        self.prog_dict, prog_list = gbsgrid_back.find_sbgrid_progs()
 
         self.prog_sel_combo = QtGui.QComboBox(self)
         self.prog_sel_combo.completer()
@@ -118,7 +118,7 @@ class ConfigEditor(QtGui.QMainWindow):
     def add_click(self):
         prog = str(self.prog_sel_combo.currentText())
         ver = str(self.ver_sel_combo.currentText())
-        self.config_array = backend.add_override(self.config_array, prog, ver)
+        self.config_array = gbsgrid_back.add_override(self.config_array, prog, ver)
         print self.config_array
         self.save_btn.setEnabled(True)
         self.populate_table(self.config_array)
@@ -128,7 +128,7 @@ class ConfigEditor(QtGui.QMainWindow):
     
     def save_click(self):
         self.lbl4.setText('Saved Overrides')
-        backend.write_config(self.config_header, self.config_array)
+        gbsgrid_back.write_config(self.config_header, self.config_array)
         self.statusBar().showMessage("Changes saved to ~/.sbgrid.conf")
 
 
