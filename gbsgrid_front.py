@@ -48,9 +48,12 @@ class ConfigEditor(QtGui.QMainWindow):
         self.save_btn.resize(self.save_btn.sizeHint())
 
         self.table = QtGui.QTableWidget(self,)
+
+        self.table.setHorizontalHeaderLabels(["Program","Version","Delete"])
         self.table.setColumnCount(3)
-        self.table.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)
+	self.table.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)
         self.table.horizontalHeader().setStretchLastSection(True)
+
         self.populate_table(self.config_array)
         
 	#widget locations
@@ -81,7 +84,8 @@ class ConfigEditor(QtGui.QMainWindow):
         self.show()
 
     def populate_table(self, config_array):
-        self.table.clear()        
+        self.table.clear()
+        self.table.setHorizontalHeaderLabels(["Program","Version",""])        
         self.table.setRowCount(len(config_array))
         for i in range(len(config_array)):
             prog = QtGui.QTableWidgetItem(config_array[i][0])
