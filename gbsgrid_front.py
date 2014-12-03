@@ -97,13 +97,13 @@ class ConfigEditor(QtGui.QMainWindow):
         # or button = self.sender()
         index = self.table.indexAt(button.pos())
         if index.isValid():
-            print(index.row(), index.column())
+            #print(index.row(), index.column())
             del self.config_array[index.row()]
         self.populate_table(self.config_array)
         self.save_btn.setEnabled(True)
         
     def progSelected(self, prog_name):
-        print prog_name
+        #print prog_name
         self.add_btn.setEnabled(True)
         self.statusBar().showMessage(prog_name+' selected, choose a version')
 
@@ -112,14 +112,14 @@ class ConfigEditor(QtGui.QMainWindow):
             self.ver_sel_combo.addItem(ver)
 
     def verSelected(self, ver_name):
-        print ver_name
+        #print ver_name
         self.statusBar().showMessage(ver_name+' selected, click <b>add</b> to store change')
 
     def add_click(self):
         prog = str(self.prog_sel_combo.currentText())
         ver = str(self.ver_sel_combo.currentText())
         self.config_array = gbsgrid_back.add_override(self.config_array, prog, ver)
-        print self.config_array
+        #print self.config_array
         self.save_btn.setEnabled(True)
         self.populate_table(self.config_array)
         self.statusBar().showMessage(str(self.prog_sel_combo.currentText())+', version '+str(self.ver_sel_combo.currentText())+' added to change list')
