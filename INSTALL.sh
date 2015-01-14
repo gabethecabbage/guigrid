@@ -1,5 +1,11 @@
 #! /bin/bash
 
+######################CHECK FOR ROOT########################
+if [ "$(id -u)" != "0" ]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
+
 INSTALL_DIR=/opt
 mkdir $INSTALL_DIR/gbsgrid
 cp gbsgrid*	$INSTALL_DIR/gbsgrid/
@@ -15,4 +21,6 @@ echo python gbsgrid_front.py >> $INSTALL_DIR/gbsgrid/gbsgrid.sh
 ln -s $INSTALL_DIR/gbsgrid/gbsgrid.sh /usr/bin/gbsgrid
 chmod +x /usr/bin/gbsgrid
 
-echo Install finished to $INSTALL_DIR/gbsgrid
+echo "Install finished to $INSTALL_DIR/gbsgrid"
+echo "Ensure PyQt4 and sbgrid are installed."
+echo "(e.g. RHEL:'yum install PyQt4' or DEB:'apt-get install python-qt4')"
