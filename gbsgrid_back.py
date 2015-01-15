@@ -40,14 +40,15 @@ def read_config(config_file):
 
 def write_config(config_header, config_array):
     conf_path='/home/'+getpass.getuser()+'/.sbgrid.conf'
-    if os.path.isfile(conf_path+'.bak'): os.remove(conf_path+'.bak')    
-    if os.path.isfile(conf_path): 
+    if os.path.isfile(conf_path+'.bak'): 
+		os.remove(conf_path+'.bak')    
+    if os.path.isfile(conf_path):
 		os.rename(conf_path, conf_path+'.bak')
     config_file=open(conf_path, 'w')
     config_file.writelines(config_header)
     for i in config_array: 
 		config_file.write(i[0]+"="+i[1]+"\n")
-	config_file.close()
+    config_file.close()
         
     
 
