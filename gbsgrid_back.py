@@ -47,7 +47,7 @@ def write_config(config_header, config_array):
     config_file.writelines(config_header)
     for i in config_array: 
 		config_file.write(i[0]+"="+i[1]+"\n")
-		config_file.close()
+	config_file.close()
         
     
 
