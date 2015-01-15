@@ -5,7 +5,7 @@ import sys
 import gbsgrid_back
 from PyQt4 import QtGui, QtCore
 
-
+version_num = "0.0.7"
 
 class ConfigEditor(QtGui.QMainWindow):
     
@@ -23,7 +23,7 @@ class ConfigEditor(QtGui.QMainWindow):
         lbl3 = QtGui.QLabel("Version", self)
         self.lbl4 = QtGui.QLabel("Saved Overrides", self)
         self.lbl4.adjustSize()
-        self.statusBar().showMessage('Ready')
+        self.statusBar().showMessage('Ready (ver: ' + version_num + ')')
    
         config_file=gbsgrid_back.open_config()
         self.config_header, self.config_array = gbsgrid_back.read_config(config_file)
@@ -85,7 +85,7 @@ class ConfigEditor(QtGui.QMainWindow):
 
     def populate_table(self, config_array):
         self.table.clear()
-        self.table.setHorizontalHeaderLabels(["Program","Version",""])        
+        self.table.setHorizontalHeaderLabels(["Program","Version"," "])        
         self.table.setRowCount(len(config_array))
         for i in range(len(config_array)):
             prog = QtGui.QTableWidgetItem(config_array[i][0])
