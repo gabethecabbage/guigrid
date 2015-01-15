@@ -1,12 +1,24 @@
 #! /bin/bash
 
+if [ -n "${1+1}" ]; then
+  read -p "This will install gbsgrid to $1/gbsgrid, continue? (y/n)" -n 1 -r
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+      exit 1
+  fi
+  INSTALL_DIR=$1
+else
+  read -p "Please specify an install location (e.g. /opt): " INSTALL_DIR
+fi
+
 ######################CHECK FOR ROOT########################
 if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
    exit 1
 fi
 
-INSTALL_DIR=/opt
+echo $INSTALL_DIR/gbsgrid
+
 mkdir $INSTALL_DIR/gbsgrid
 cp gbsgrid*	$INSTALL_DIR/gbsgrid/
 
