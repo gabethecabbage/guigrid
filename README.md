@@ -1,8 +1,8 @@
 #Todo
 
-1. <del>Add IOError handling</del>
-1. <del>Clean up backend name space</del>
-1. <del>Document front end functions</del>
+1. ~~Add IOError handling~~
+1. ~~Clean up backend name space~~
+1. ~~Document front end functions~~
 1. Make front end layout less static
 1. ~~Add tooltips to front end~~
 1. Fill this README.md
