@@ -16,6 +16,14 @@ class ConfigEditor(QtGui.QMainWindow):
         
     def initUI(self):      
 
+        #Initialise the backend and scrape required info/configs
+        branch = gbsgrid_back.detect_branch()
+        progs_list = gbsgrid_back.ls_progs(branch)
+        self.progs_dict = gbsgrid_back.scrape_all_progs(branch, progs_list)
+
+        config_file=gbsgrid_back.open_config()
+        self.config_header, self.config_array = gbsgrid_back.read_config(config_file)
+
         lbl1 = QtGui.QLabel("Select an SBGrid Program", self)
         lbl1.adjustSize() 
         lbl1.resize
@@ -25,18 +33,15 @@ class ConfigEditor(QtGui.QMainWindow):
         self.lbl4.adjustSize()
         self.statusBar().showMessage('Ready (ver: ' + version_num + ')')
    
-        config_file=gbsgrid_back.open_config()
-        self.config_header, self.config_array = gbsgrid_back.read_config(config_file)
-        prog_list = gbsgrid_back.find_sbgrid_progs()
-        self.prog_dict = gbsgrid_back.scrape_sbgrid_progs_info(prog_list)
-
         self.prog_sel_combo = QtGui.QComboBox(self)
         self.prog_sel_combo.completer()
-        for prog in prog_list:	
+        for prog in progs_list:	
             self.prog_sel_combo.addItem(prog)
 
         self.ver_sel_combo = QtGui.QComboBox(self)
         self.ver_sel_combo.completer()
+        for ver in self.progs_dict[str(progs_list[0])]["allver"]:	
+            self.ver_sel_combo.addItem(ver)
 
         self.add_btn = QtGui.QPushButton(self)
         self.add_btn.setIcon(QtGui.QIcon("icons/icon-plus-512.png"))
@@ -113,7 +118,7 @@ class ConfigEditor(QtGui.QMainWindow):
         self.statusBar().showMessage(prog_name+' selected, choose a version')
 
         self.ver_sel_combo.clear()
-        for ver in self.prog_dict[str(prog_name)]["allver"]:	
+        for ver in self.progs_dict[str(prog_name)]["allver"]:	
             self.ver_sel_combo.addItem(ver)
 
     def verSelected(self, ver_name):
@@ -123,7 +128,7 @@ class ConfigEditor(QtGui.QMainWindow):
     def add_click(self):
         prog = str(self.prog_sel_combo.currentText())
         ver = str(self.ver_sel_combo.currentText())
-        self.config_array = gbsgrid_back.add_override(self.config_array, prog, ver, self.prog_dict)
+        self.config_array = gbsgrid_back.add_override(self.config_array, prog, ver, self.progs_dict)
         #print self.config_array
         self.save_btn.setEnabled(True)
         self.populate_table(self.config_array)

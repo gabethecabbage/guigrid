@@ -28,7 +28,7 @@ def read_config(config_file):
     for line in config_file:
         s=str(line)
         """look for "#" chars, these indicate header lines, 
-	also means comments will be moved above overides"""
+    also means comments will be moved above overides"""
         if s[0] == "#": 
             config_header.append(s)
         else:
@@ -46,16 +46,16 @@ def write_config(config_header, config_array):
 
     conf_path='/home/'+getpass.getuser()+'/.sbgrid.conf'
     if os.path.isfile(conf_path+'.bak'): 
-		os.remove(conf_path+'.bak')    
+        os.remove(conf_path+'.bak')    
     if os.path.isfile(conf_path):
-		os.rename(conf_path, conf_path+'.bak')
+        os.rename(conf_path, conf_path+'.bak')
     config_file=open(conf_path, 'w')
     config_file.writelines(config_header)
     for i in config_array: 
-		config_file.write(i[0]+"="+i[1]+"\n")
+        config_file.write(i[0]+"="+i[1]+"\n")
     config_file.close()
         
-def list_top_level_dir(pwd):
+def ls_dirs(pwd):
     #pythonic ls -d, provides list of dirs in
 
     dirlist=[ name for name in os.listdir(pwd) if os.path.isdir(os.path.join(pwd, name)) ]
@@ -66,7 +66,7 @@ def detect_branch():
     produces simple distionary with path to branch and platform a suffix"""
     
     branch = {}
-    dir_list = list_top_level_dir("/programs/")
+    dir_list = ls_dirs("/programs/")
     for dir in dir_list:
         if dir == "i386-linux":
             branch['folder'] = "/programs/i386-linux"
@@ -84,55 +84,55 @@ def detect_branch():
 
     return branch
 
-def find_sbgrid_progs():
+def ls_progs(branch):
     """Searches host file system and makes an alphabetised list,
     ignores any directories without a *.rc file"""
 
-    branch = detect_branch()
-    dir_list = list_top_level_dir(branch['folder'])
-    prog_list = []
+    dir_list = ls_dirs(branch['folder'])
+    progs_list = []
     for dir in dir_list:
+        """only if the program has an *.rc file, should we index it.
+        those without likely have no versioning or override information"""
         if os.path.isfile(branch['folder']+'/'+dir+'/'+dir+'.rc'):
-            prog_list.append(dir)
-    prog_list.sort()
-    return prog_list
+            progs_list.append(dir)
+    progs_list.sort()
+    return progs_list
     
-def scrape_sbgrid_progs_info(prog_list):
-    """Makes a dict with
-    prog names as keys leading to a list of versions"""
+def scrape_all_progs(branch, progs_list):
+    """Makes a dict with prog names as keys corresponding to """
 
-    branch = detect_branch()
-    prog_dict={}
-    for prog in prog_list:
-        prog_dict[prog]= parse_prog_rc(prog, branch)
-    return prog_dict
+    progs_dict={}
+    #read a packages rc file and convert to a dictionary
+    for prog_name in progs_list:
+        rc_path=branch['folder']+'/'+prog_name+'/'+prog_name+'.rc'
 
-def parse_prog_rc(prog_name, branch):
-    """reads a package rc file and converts this to a dictionary to be 
-    queried by either the front or backend"""
-
-    rc_path=branch['folder']+'/'+prog_name+'/'+prog_name+'.rc'
-
-    prog_rc=open(rc_path, 'r')
-    verline = -1
-    while verline == -1:
-        s=prog_rc.readline()
-        verline = s.find("setVersion")
-
-    s = s.replace('"','')
-    prog_info = {}
-    prog_info["overide_name"] = s.split()[1]+branch['suffix']
-    prog_info["defver"] = s.split()[2]
-    prog_info["otherver"] = []
-    for i in range(len(s.split())):
-        if i > 2: prog_info["otherver"].append(s.split()[i])
-
-    prog_info["allver"] = prog_info["otherver"]
-    prog_info["allver"].insert(0,prog_info["defver"])
-
-    return prog_info
+        prog_rc=open(rc_path, 'r')
+        #look for the version control metadata line starting with "setVersion"
+        is_ver_line = -1
+        while is_ver_line == -1:
+            current_line=prog_rc.readline()
+            is_ver_line = current_line.find("setVersion")
+        set_ver_ls = current_line.replace('"','').split()
         
+        prog_info = {}
+        #2nd item on line is the override name
+        prog_info["override_name"] = set_ver_ls[1]+branch['suffix']
+        #3rd item on line is the default version
+        prog_info["defver"] = set_ver_ls[2]
+        #remaining items are all other versions
+        prog_info["otherver"] = []
+        for i in range(len(set_ver_ls)):
+            if i > 2: 
+                prog_info["otherver"].append(set_ver_ls[i])
 
+        #combine default vers and other vers for complete with default at start
+        prog_info["allver"] = prog_info["otherver"]
+        prog_info["allver"].insert(0,prog_info["defver"])
+
+        progs_dict[prog_name]= prog_info
+        prog_rc.close()
+
+    return progs_dict
 
 def add_override(config_array, prog, ver, prog_dict):
     """checks if a version override already exists for this program, if so it
@@ -146,9 +146,6 @@ def add_override(config_array, prog, ver, prog_dict):
     if already_added == False:
         config_array.append([prog_dict[prog]["overide_name"],ver])
     return config_array
-        
-    
-
 
 
 if __name__ == '__main__':
