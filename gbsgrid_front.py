@@ -27,7 +27,8 @@ class ConfigEditor(QtGui.QMainWindow):
    
         config_file=gbsgrid_back.open_config()
         self.config_header, self.config_array = gbsgrid_back.read_config(config_file)
-        self.prog_dict, prog_list = gbsgrid_back.find_sbgrid_progs()
+        prog_list = gbsgrid_back.find_sbgrid_progs()
+        self.prog_dict = gbsgrid_back.scrape_sbgrid_progs_info(prog_list)
 
         self.prog_sel_combo = QtGui.QComboBox(self)
         self.prog_sel_combo.completer()
@@ -49,7 +50,7 @@ class ConfigEditor(QtGui.QMainWindow):
 
         self.table = QtGui.QTableWidget(self,)
 
-        self.table.setHorizontalHeaderLabels(["Program","Version","Delete"])
+        self.table.setHorizontalHeaderLabels(["Program","Version","Reset"])
         self.table.setColumnCount(3)
 	self.table.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)
         self.table.horizontalHeader().setStretchLastSection(True)
@@ -90,13 +91,13 @@ class ConfigEditor(QtGui.QMainWindow):
         for i in range(len(config_array)):
             prog = QtGui.QTableWidgetItem(config_array[i][0])
             ver = QtGui.QTableWidgetItem(config_array[i][1])
-            self.button = QtGui.QPushButton('Delete')
-            self.button.clicked.connect(self.deleteButtonClicked)
+            self.button = QtGui.QPushButton('Reset')
+            self.button.clicked.connect(self.resetButtonClicked)
             self.table.setItem(i,0,prog)
             self.table.setItem(i,1,ver)
             self.table.setCellWidget(i,2,self.button)
 
-    def deleteButtonClicked(self):
+    def resetButtonClicked(self):
         button = QtGui.qApp.focusWidget()
         # or button = self.sender()
         index = self.table.indexAt(button.pos())
@@ -112,7 +113,7 @@ class ConfigEditor(QtGui.QMainWindow):
         self.statusBar().showMessage(prog_name+' selected, choose a version')
 
         self.ver_sel_combo.clear()
-        for ver in self.prog_dict[str(prog_name)]:	
+        for ver in self.prog_dict[str(prog_name)]["allver"]:	
             self.ver_sel_combo.addItem(ver)
 
     def verSelected(self, ver_name):
@@ -122,14 +123,14 @@ class ConfigEditor(QtGui.QMainWindow):
     def add_click(self):
         prog = str(self.prog_sel_combo.currentText())
         ver = str(self.ver_sel_combo.currentText())
-        self.config_array = gbsgrid_back.add_override(self.config_array, prog, ver)
+        self.config_array = gbsgrid_back.add_override(self.config_array, prog, ver, self.prog_dict)
         #print self.config_array
         self.save_btn.setEnabled(True)
         self.populate_table(self.config_array)
         self.statusBar().showMessage(str(self.prog_sel_combo.currentText())+', version '+str(self.ver_sel_combo.currentText())+' added to change list')
         self.lbl4.setText('Unsaved Overrides')
         self.lbl4.adjustSize()
-    
+ 
     def save_click(self):
         self.lbl4.setText('Saved Overrides')
         gbsgrid_back.write_config(self.config_header, self.config_array)
