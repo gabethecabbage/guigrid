@@ -5,7 +5,7 @@ import sys
 import gbsgrid_back
 from PyQt4 import QtGui, QtCore
 
-version_num = "0.0.7"
+__version__ = "0.0.8"
 
 class ConfigEditor(QtGui.QMainWindow):
     
@@ -15,15 +15,16 @@ class ConfigEditor(QtGui.QMainWindow):
         self.initUI()
         
     def initUI(self):      
-
+        
         #Initialise the backend and scrape required info/configs
         branch = gbsgrid_back.detect_branch()
-        progs_list = gbsgrid_back.ls_progs(branch)
+        progs_list = gbsgrid_back.ls_progs(branch['folder'])
         self.progs_dict = gbsgrid_back.scrape_all_progs(branch, progs_list)
 
         config_file=gbsgrid_back.open_config()
         self.config_header, self.config_array = gbsgrid_back.read_config(config_file)
 
+        #spawn labels and status bar
         lbl1 = QtGui.QLabel("Select an SBGrid Program", self)
         lbl1.adjustSize() 
         lbl1.resize
@@ -31,38 +32,35 @@ class ConfigEditor(QtGui.QMainWindow):
         lbl3 = QtGui.QLabel("Version", self)
         self.lbl4 = QtGui.QLabel("Saved Overrides", self)
         self.lbl4.adjustSize()
-        self.statusBar().showMessage('Ready (ver: ' + version_num + ')')
+        self.statusBar().showMessage('Ready (ver: ' + __version__ + ')')
    
+        #spawn/populate program select box
         self.prog_sel_combo = QtGui.QComboBox(self)
         self.prog_sel_combo.completer()
         for prog in progs_list:	
             self.prog_sel_combo.addItem(prog)
-
+        #spawn/populate version select box
         self.ver_sel_combo = QtGui.QComboBox(self)
         self.ver_sel_combo.completer()
         for ver in self.progs_dict[str(progs_list[0])]["allver"]:	
             self.ver_sel_combo.addItem(ver)
-
+        #spawn add button
         self.add_btn = QtGui.QPushButton(self)
         self.add_btn.setIcon(QtGui.QIcon("icons/icon-plus-512.png"))
-        self.add_btn.setEnabled(False)
         self.add_btn.setToolTip('Sets the selected <b>version</b> as default for this <b>program</b>. ')
-
+        #spawn save button
         self.save_btn = QtGui.QPushButton('Save', self)
         self.save_btn.setEnabled(False)
         self.save_btn.setToolTip('Save all changes to your config file.')
         self.save_btn.resize(self.save_btn.sizeHint())
-
+        #spawn/populate overrides info table
         self.table = QtGui.QTableWidget(self,)
-
         self.table.setHorizontalHeaderLabels(["Program","Version","Reset"])
         self.table.setColumnCount(3)
-	self.table.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)
+        self.table.setEditTriggers(QtGui.QTableWidget.NoEditTriggers)
         self.table.horizontalHeader().setStretchLastSection(True)
-
-        self.populate_table(self.config_array)
-        
-	#widget locations
+        self.populate_table()
+    	#set static widget locations
         lbl1.move(25, 25)
        	lbl2.move(25, 50)
         lbl3.move(165, 50)
@@ -77,69 +75,89 @@ class ConfigEditor(QtGui.QMainWindow):
         self.table.resize(315,150)
         self.save_btn.move(25,300)
 
-
-        self.prog_sel_combo.activated[str].connect(self.progSelected)
-        self.ver_sel_combo.activated[str].connect(self.verSelected) 
+        #linking clicks to event functions
+        self.prog_sel_combo.activated[str].connect(self.prog_selected)
+        self.ver_sel_combo.activated[str].connect(self.ver_selected) 
         self.add_btn.clicked.connect(lambda:    self.add_click())
         self.save_btn.clicked.connect(lambda:   self.save_click())
-
+        #setup window and show it
         self.setGeometry(300, 300, 360, 350)
         self.setFixedSize(360, 350)
         self.setWindowIcon(QtGui.QIcon('icons/gbsgrid-icon.png'))        
         self.setWindowTitle('SBGrid Version manager - GBSGrid')
         self.show()
 
-    def populate_table(self, config_array):
+    def populate_table(self):
+        """Clears the overrides information table and repopulates it"""
         self.table.clear()
         self.table.setHorizontalHeaderLabels(["Program","Version"," "])        
-        self.table.setRowCount(len(config_array))
-        for i in range(len(config_array)):
-            prog = QtGui.QTableWidgetItem(config_array[i][0])
-            ver = QtGui.QTableWidgetItem(config_array[i][1])
-            self.button = QtGui.QPushButton('Reset')
-            self.button.clicked.connect(self.resetButtonClicked)
+        self.table.setRowCount(len(self.config_array))
+        for i in range(len(self.config_array)):
+            prog = QtGui.QTableWidgetItem(self.config_array[i][0])
+            ver = QtGui.QTableWidgetItem(self.config_array[i][1])
+            self.reset_btn = QtGui.QPushButton('Reset')
+            self.reset_btn.setToolTip('<b>Removes an override entry</b>, resetting the version to the SBGrid default')
+            self.reset_btn.clicked.connect(self.reset_button_clicked)
             self.table.setItem(i,0,prog)
             self.table.setItem(i,1,ver)
-            self.table.setCellWidget(i,2,self.button)
+            self.table.setCellWidget(i,2,self.reset_btn)
 
-    def resetButtonClicked(self):
+    def reset_button_clicked(self):
+        """Resets the progs override to the default version"""
         button = QtGui.qApp.focusWidget()
-        # or button = self.sender()
         index = self.table.indexAt(button.pos())
         if index.isValid():
-            #print(index.row(), index.column())
             del self.config_array[index.row()]
-        self.populate_table(self.config_array)
+        self.populate_table()
         self.save_btn.setEnabled(True)
         
-    def progSelected(self, prog_name):
-        #print prog_name
-        self.add_btn.setEnabled(True)
+    def prog_selected(self, prog_name):
+        """Populates the version select dropdown""" 
         self.statusBar().showMessage(prog_name+' selected, choose a version')
 
         self.ver_sel_combo.clear()
         for ver in self.progs_dict[str(prog_name)]["allver"]:	
             self.ver_sel_combo.addItem(ver)
 
-    def verSelected(self, ver_name):
-        #print ver_name
+    def ver_selected(self, ver_name):
         self.statusBar().showMessage(ver_name+' selected, click <b>add</b> to store change')
 
     def add_click(self):
+        """Adds entry to config_array, refreshes UI"""
         prog = str(self.prog_sel_combo.currentText())
         ver = str(self.ver_sel_combo.currentText())
         self.config_array = gbsgrid_back.add_override(self.config_array, prog, ver, self.progs_dict)
         #print self.config_array
         self.save_btn.setEnabled(True)
-        self.populate_table(self.config_array)
+        self.populate_table()
         self.statusBar().showMessage(str(self.prog_sel_combo.currentText())+', version '+str(self.ver_sel_combo.currentText())+' added to change list')
         self.lbl4.setText('Unsaved Overrides')
         self.lbl4.adjustSize()
  
     def save_click(self):
+        """Calls to the backend to store staged override changes in the file"""
         self.lbl4.setText('Saved Overrides')
-        gbsgrid_back.write_config(self.config_header, self.config_array)
-        self.statusBar().showMessage("Changes saved to ~/.sbgrid.conf")
+        try:
+            gbsgrid_back.write_config(self.config_header, self.config_array)
+        except IOError:
+            print("Can't write to file, please check you have permission for ~/.sbgrid.conf")
+        else:
+            self.statusBar().showMessage("Changes saved to ~/.sbgrid.conf")
+            self.save_btn.setEnabled(False)
+
+    def closeEvent(self, event):
+        """Warns user when closing the program with unsaved changes"""
+        if self.save_btn.isEnabled():
+            reply = QtGui.QMessageBox.question(self, 'Message',
+                "You have unsaved override changes, are you sure to quit?", QtGui.QMessageBox.Yes | 
+                QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+
+            if reply == QtGui.QMessageBox.Yes:
+                event.accept()
+            else:
+                event.ignore()
+        else:
+            event.accept()
 
 
 	

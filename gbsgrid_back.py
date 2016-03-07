@@ -7,10 +7,9 @@ import subprocess
 
     
 def open_config():
-    """Locates and opens the sbgrid config file, if none is 
-    found it opens a default file with only the header"""
-    
+    """Opens the sbgrid config file."""
     conf_path='/home/'+getpass.getuser()+'/.sbgrid.conf'
+    #if none is found load a default file with only the header
     if not os.path.isfile(conf_path):
         conf_path='gbsgrid_default.conf'
     
@@ -18,10 +17,12 @@ def open_config():
     return config_file
 
 def read_config(config_file):
-    """Creates 2 arrays, 1 to store the header lines and
-    another array of list to store any existing overides.
-    New overrides can be added to this array later."""
-    
+    """Return array with config header, return array with config lines
+
+    Returns 2 arrays; an array to store the header lines,
+    an array to store any existing overides.
+    New overrides can be added to latter array later.
+    """
     config_header = []
     config_array = []
     
@@ -40,10 +41,12 @@ def read_config(config_file):
     return config_header, config_array
 
 def write_config(config_header, config_array):
-    """Backs up old config file to a .bak file,
-    writes config header lines, including user comments,
-    then writes out each config_array entry as a new line."""
+    """Writes new config files
 
+    Backs up old config file to a .bak file,
+    writes config header lines, including user comments,
+    then writes out each config_array entry as a new line.
+    """
     conf_path='/home/'+getpass.getuser()+'/.sbgrid.conf'
     if os.path.isfile(conf_path+'.bak'): 
         os.remove(conf_path+'.bak')    
@@ -56,15 +59,17 @@ def write_config(config_header, config_array):
     config_file.close()
         
 def ls_dirs(pwd):
-    #pythonic ls -d, provides list of dirs in
+    """Returns list of dirs in a given dir"""
 
     dirlist=[ name for name in os.listdir(pwd) if os.path.isdir(os.path.join(pwd, name)) ]
     return dirlist
 
 def detect_branch():
-    """Look for an sbgrid installation and detect the OS/Arch in use,
-    produces simple distionary with path to branch and platform a suffix"""
-    
+    """Returns branch dict with folder and suffix keys
+
+    Looks for an sbgrid installation and detect the OS/Arch in use,
+    produces simple distionary with path to branch and platform a suffix
+    """
     branch = {}
     dir_list = ls_dirs("/programs/")
     for dir in dir_list:
@@ -84,23 +89,30 @@ def detect_branch():
 
     return branch
 
-def ls_progs(branch):
-    """Searches host file system and makes an alphabetised list,
-    ignores any directories without a *.rc file"""
+def ls_progs(path):
+    """Return list of installed SBgrid programs
 
-    dir_list = ls_dirs(branch['folder'])
+    Searches a path for folders with a *.rc file,
+    places these in an alphabetised list
+    """
+    dir_list = ls_dirs(path)
     progs_list = []
     for dir in dir_list:
         """only if the program has an *.rc file, should we index it.
         those without likely have no versioning or override information"""
-        if os.path.isfile(branch['folder']+'/'+dir+'/'+dir+'.rc'):
+        if os.path.isfile(path+'/'+dir+'/'+dir+'.rc'):
             progs_list.append(dir)
     progs_list.sort()
     return progs_list
     
 def scrape_all_progs(branch, progs_list):
-    """Makes a dict with prog names as keys corresponding to """
+    """Returns dict with program name as key and dicts of info as entries
 
+    Iterates through a list of programs, searches a proveded branch for
+    each programs .rc file. The .rc file is parsed to extract version 
+    information and override names. The .rc info is placed in a dictionary,
+    stored in another ditionary using program names as keys.
+    """
     progs_dict={}
     #read a packages rc file and convert to a dictionary
     for prog_name in progs_list:
@@ -135,16 +147,18 @@ def scrape_all_progs(branch, progs_list):
     return progs_dict
 
 def add_override(config_array, prog, ver, prog_dict):
-    """checks if a version override already exists for this program, if so it
-    edits the old one, if not it adds a new one."""
-    
+    """Returns modified config_array with an override updated
+
+    Check if a version override already exists for this program, if yes,
+    edit the old one, if no, add new one.
+    """
     already_added = False    
     for i in config_array:
-        if i[0] == prog_dict[prog]["overide_name"]:
+        if i[0] == prog_dict[prog]["override_name"]:
             i[1] = ver
             already_added = True
     if already_added == False:
-        config_array.append([prog_dict[prog]["overide_name"],ver])
+        config_array.append([prog_dict[prog]["override_name"],ver])
     return config_array
 
 
