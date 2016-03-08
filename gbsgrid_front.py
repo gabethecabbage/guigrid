@@ -18,7 +18,11 @@ class ConfigEditor(QtGui.QMainWindow):
         
         #Initialise the backend and scrape required info/configs
         branch = gbsgrid_back.detect_branch()
-        progs_list = gbsgrid_back.ls_progs(branch['folder'])
+        try:
+            progs_list = gbsgrid_back.ls_progs(branch['folder'])
+        except KeyError:
+            error_msg = "No SBgrid installation found at '/programs/'"
+            QtGui.QMessageBox.information(None, 'Fatal Error', error_msg)
         self.progs_dict = gbsgrid_back.scrape_all_progs(branch, progs_list)
 
         config_file=gbsgrid_back.open_config()
