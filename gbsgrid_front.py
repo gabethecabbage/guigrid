@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import gbsgrid_back
+import sbgrid_parse
 from PyQt4 import QtGui, QtCore
 
 __version__ = "0.0.8"
@@ -17,16 +17,16 @@ class ConfigEditor(QtGui.QMainWindow):
     def initUI(self):      
         
         #Initialise the backend and scrape required info/configs
-        branch = gbsgrid_back.detect_branch()
+        branch = sbgrid_parse.detect_branch()
         try:
-            progs_list = gbsgrid_back.ls_progs(branch['folder'])
+            progs_list = sbgrid_parse.ls_progs(branch['folder'])
         except KeyError:
             error_msg = "No SBgrid installation found at '/programs/'"
             QtGui.QMessageBox.information(None, 'Fatal Error', error_msg)
-        self.progs_dict = gbsgrid_back.scrape_all_progs(branch, progs_list)
+        self.progs_dict = sbgrid_parse.scrape_all_progs(branch, progs_list)
 
-        config_file=gbsgrid_back.open_config()
-        self.config_header, self.config_array = gbsgrid_back.read_config(config_file)
+        config_file=sbgrid_parse.open_config()
+        self.config_header, self.config_array = sbgrid_parse.read_config(config_file)
 
         #spawn labels and status bar
         lbl1 = QtGui.QLabel("Select an SBGrid Program", self)
@@ -130,7 +130,7 @@ class ConfigEditor(QtGui.QMainWindow):
         """Adds entry to config_array, refreshes UI"""
         prog = str(self.prog_sel_combo.currentText())
         ver = str(self.ver_sel_combo.currentText())
-        self.config_array = gbsgrid_back.add_override(self.config_array, prog, ver, self.progs_dict)
+        self.config_array = sbgrid_parse.add_override(self.config_array, prog, ver, self.progs_dict)
         #print self.config_array
         self.save_btn.setEnabled(True)
         self.populate_table()
@@ -142,7 +142,7 @@ class ConfigEditor(QtGui.QMainWindow):
         """Calls to the backend to store staged override changes in the file"""
         self.lbl4.setText('Saved Overrides')
         try:
-            gbsgrid_back.write_config(self.config_header, self.config_array)
+            sbgrid_parse.write_config(self.config_header, self.config_array)
         except IOError:
             print("Can't write to file, please check you have permission for ~/.sbgrid.conf")
         else:
