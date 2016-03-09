@@ -136,6 +136,7 @@ def scrape_all_progs(branch, progs_list):
         for i in range(len(set_ver_ls)):
             if i > 2: 
                 prog_info["otherver"].append(set_ver_ls[i])
+        prog_info["otherver"].append("disable")
 
         #combine default vers and other vers for complete with default at start
         prog_info["allver"] = prog_info["otherver"]
