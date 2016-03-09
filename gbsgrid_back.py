@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 # -*- coding: utf-8 -*-
 
 import getpass
@@ -11,7 +11,7 @@ def open_config():
     conf_path='/home/'+getpass.getuser()+'/.sbgrid.conf'
     #if none is found load a default file with only the header
     if not os.path.isfile(conf_path):
-        conf_path='gbsgrid_default.conf'
+        conf_path='.sbgrid.conf'
     
     config_file=open(conf_path, 'r')
     return config_file
