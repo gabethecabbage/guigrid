@@ -16,7 +16,14 @@ Once the desired program versions have been selected, the changes can be saved t
 This software requires that one branch of SBgrid is installed in, or symlinked to, "/programs". 
 
 It is written in Python 3 and PyQt4. These can be installed through your package manager:
-e.g. RHEL:'yum install PyQt4' or DEB:'apt-get install python-qt4'
+e.g. for RHEL:
+```bash
+yum install PyQt4
+```
+or for DEB:
+```bash
+apt-get install python-qt4
+```
 
 ## Installation
 Clone the repo from our gitlab and install using python setuptools.
