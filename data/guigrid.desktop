@@ -9,3 +9,4 @@ Categories=Utility;Development;
 Name=GUIGrid
 GenericName=SBGrid Program Version Manager
 Comment=GUIGrid is a gui tool to control the versions of SBGrid managed software.
+Icon=/usr/share/icons/hicolor/scalable/apps/guigrid-icon.svg
