@@ -1,8 +1,8 @@
 
 
-# GBSgrid
+# GUIGrid
 
-**GBSGrid is a gui tool to control the versions of SBGrid managed software.**
+**GUIGrid is a gui tool to control the versions of SBGrid managed software.**
 
 ![](http://octavia.smith.man.ac.uk/PBRB_Gabe/gbsgrid/raw/master/icons/screenshot.png)
 
