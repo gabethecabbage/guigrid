@@ -49,8 +49,8 @@ class ConfigEditor(QtGui.QMainWindow):
         for ver in self.progs_dict[str(progs_list[0])]["allver"]:	
             self.ver_sel_combo.addItem(ver)
         #spawn add button
-        self.add_btn = QtGui.QPushButton(self)
-        self.add_btn.setIcon(QtGui.QIcon("icons/icon-plus-512.png"))
+	self.add_btn = QtGui.QPushButton('+',self)
+        self.add_btn.setStyleSheet('QPushButton {font-size: 24pt; font-weight: bold}')
         self.add_btn.setToolTip('Sets the selected <b>version</b> as default for this <b>program</b>. ')
         #spawn save button
         self.save_btn = QtGui.QPushButton('Save', self)
