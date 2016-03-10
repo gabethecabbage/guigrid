@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import signal
 import sys
 import parser
 from PyQt4 import QtGui, QtCore
@@ -166,16 +167,17 @@ class ConfigEditor(QtGui.QMainWindow):
             event.accept()
 
 
-	
-                
-def main():
-    
-    app = QtGui.QApplication(sys.argv)
-    ex = ConfigEditor()
-    sys.exit(app.exec_())
-
-    
+def sigint_handler(*args):
+    """Handler for the SIGINT signal."""
+    sys.stderr.write('\r')
+    QtGui.QApplication.quit()    
 
 if __name__ == '__main__':
-    main()
+    signal.signal(signal.SIGINT, sigint_handler)    
+    app = QtGui.QApplication(sys.argv)
+    timer = QtCore.QTimer()
+    timer.start(500)  # You may change this if you wish.
+    timer.timeout.connect(lambda: None)
+    ex = ConfigEditor()
+    sys.exit(app.exec_())
 
