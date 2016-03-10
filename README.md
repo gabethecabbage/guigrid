@@ -4,7 +4,7 @@
 
 **GUIGrid is a gui tool to control the versions of SBGrid managed software.**
 
-![](http://octavia.smith.man.ac.uk/PBRB_Gabe/gbsgrid/raw/master/icons/screenshot.png)
+![](http://octavia.smith.man.ac.uk/PBRB_Gabe/gbsgrid/raw/master/data/screenshot.png)
 
 This software is designed to make it easier for average users control their SBgrid software versions in use.
 
