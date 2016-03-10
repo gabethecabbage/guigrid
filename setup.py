@@ -20,7 +20,8 @@ setup(
     packages=['guigrid'],
     data_files=[
         ('share/icons/hicolor/scalable/apps', ['data/guigrid-icon.svg']),
-        ('share/applications', ['data/guigrid.desktop'])
+        ('share/applications', ['data/guigrid.desktop']),
+        ('/etc/skel', ['data/.sbgrid.conf'])
     ],
     entry_points={
         'console_scripts': [
