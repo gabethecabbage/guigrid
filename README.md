@@ -29,7 +29,7 @@ apt-get install python-qt4
 Clone the repo from our gitlab and install using python setuptools.
 
 ```bash
-git clone http://octavia.smith.man.ac.uk/PBRB_Gabe/guigrid/tree/master
+git clone http://octavia.smith.man.ac.uk/PBRB_Gabe/guigrid.git
 cd guigrid
 sudo python setup.py install
 ```
