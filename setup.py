@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from setuptools import setup
 
-from guigrid.main import __version__ as version
+from guigrid.gui import __version__ as version
 
 
 with open('README.md') as fh:
@@ -19,8 +19,8 @@ setup(
     license='GPLv3',
     packages=['guigrid'],
     data_files=[
-        ('share/icons/hicolor/scalable/apps', ['data/guigrid-icon.svg']),
-        ('share/applications', ['data/guigrid.desktop']),
+        ('/usr/share/icons/hicolor/scalable/apps', ['data/guigrid-icon.svg']),
+        ('/usr/share/applications', ['data/guigrid.desktop']),
         ('/etc/skel', ['data/.sbgrid.conf'])
     ],
     entry_points={
