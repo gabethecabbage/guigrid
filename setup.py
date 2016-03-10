@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from setuptools import setup
 
-from guigrid.main import __version__ as version
+from guigrid.gui import __version__ as version
 
 
 with open('README.md') as fh:
