@@ -5,7 +5,7 @@ import sys
 import parser
 from PyQt4 import QtGui, QtCore
 
-__version__ = "0.0.8"
+__version__ = "0.0.9"
 
 class ConfigEditor(QtGui.QMainWindow):
     
@@ -88,7 +88,7 @@ class ConfigEditor(QtGui.QMainWindow):
         self.setGeometry(300, 300, 360, 350)
         self.setFixedSize(360, 350)
         self.setWindowIcon(QtGui.QIcon('icons/gbsgrid-icon.png'))        
-        self.setWindowTitle('SBGrid Version manager - GBSGrid')
+        self.setWindowTitle('SBGrid Version manager - GUIGrid')
         self.show()
 
     def populate_table(self):
@@ -146,8 +146,10 @@ class ConfigEditor(QtGui.QMainWindow):
         except IOError:
             print("Can't write to file, please check you have permission for ~/.sbgrid.conf")
         else:
-            self.statusBar().showMessage("Changes saved to ~/.sbgrid.conf")
+            save_msg = "Changes saved to ~/.sbgrid.conf, to load new versions you must <b>start a new terminal session</b>"
+            self.statusBar().showMessage(save_msg)
             self.save_btn.setEnabled(False)
+            QtGui.QMessageBox.information(None, 'Changes Succesfully Saved', save_msg)
 
     def closeEvent(self, event):
         """Warns user when closing the program with unsaved changes"""

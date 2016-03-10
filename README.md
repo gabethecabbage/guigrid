@@ -19,7 +19,13 @@ It is written in Python 3 and PyQt4. These can be installed through your package
 e.g. RHEL:'yum install PyQt4' or DEB:'apt-get install python-qt4'
 
 ## Installation
-To be completed!
+Clone the repo from our gitlab and install using python setuptools.
+
+```bash
+git clone http://octavia.smith.man.ac.uk/PBRB_Gabe/guigrid/tree/master
+cd guigrid
+sudo python setup.py install
+```
 
 
 ## To do
@@ -29,11 +35,11 @@ This software is not yet complete. Desired features and changes are listed below
 1. ~~Add IOError handling~~
 1. ~~Clean up backend name space~~
 1. ~~Document front end functions~~
-1. Use OS native icons
+1. ~~Use OS native icons~~
 1. Make front end layout less static
 1. ~~Add tooltips to front end~~
-1. Fill this README.md
-1. Add a setup.py/make system
+1. ~~Fill this README.md~~
+1. ~~Add a setup.py/make system~~
 
 It is untested on Mac OSX installations but should work with minimal modifications. I'm happy to help port the software if there is a demand but I don't have a Mac to test it on.
 
