@@ -172,7 +172,7 @@ def sigint_handler(*args):
     sys.stderr.write('\r')
     QtGui.QApplication.quit()    
 
-if __name__ == '__main__':
+def main():
     signal.signal(signal.SIGINT, sigint_handler)    
     app = QtGui.QApplication(sys.argv)
     timer = QtCore.QTimer()
@@ -181,3 +181,5 @@ if __name__ == '__main__':
     ex = ConfigEditor()
     sys.exit(app.exec_())
 
+if __name__ == '__main__':
+    main()
