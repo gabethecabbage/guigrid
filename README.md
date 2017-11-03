@@ -38,7 +38,7 @@ sudo python setup.py install
 ## To do
 This software is not yet complete. Desired features and changes are listed below.
 
-
+1. Test and fix on Ubuntu
 1. ~~Add IOError handling~~
 1. ~~Clean up backend name space~~
 1. ~~Document front end functions~~
