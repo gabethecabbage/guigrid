@@ -147,7 +147,7 @@ class ConfigEditor(QtGui.QMainWindow):
         except IOError:
             print("Can't write to file, please check you have permission for ~/.sbgrid.conf")
         else:
-            save_msg = "Changes saved to ~/.sbgrid.conf, to load new versions you must <b>start a new terminal session</b>"
+            save_msg = "Changes saved to ~/.sbgrid.conf, to load new versions you must run <b>bash /programs/sbgrid.shrc</b> for bash, <b>csh /programs/sbgrid.cshrc</b> for csh, or <b>start a new terminal session</b>"
             self.statusBar().showMessage(save_msg)
             self.save_btn.setEnabled(False)
             QtGui.QMessageBox.information(None, 'Changes Succesfully Saved', save_msg)
